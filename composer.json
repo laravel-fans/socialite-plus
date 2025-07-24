@@ -1,19 +1,12 @@
 {
-    "name": "laravel/socialite",
-    "description": "Laravel wrapper around OAuth 1 & OAuth 2 libraries.",
+    "name": "laravel-fans/socialite-plus",
+    "description": "Add more providers to Laravel Socialite",
     "keywords": ["oauth", "laravel"],
     "license": "MIT",
-    "homepage": "https://laravel.com",
     "support": {
-        "issues": "https://github.com/laravel/socialite/issues",
-        "source": "https://github.com/laravel/socialite"
+        "issues": "https://github.com/laravel-fans/socialite-plus/issues",
+        "source": "https://github.com/laravel-fans/socialite-plus"
     },
-    "authors": [
-        {
-            "name": "Taylor Otwell",
-            "email": "taylor@laravel.com"
-        }
-    ],
     "require": {
         "php": "^7.2|^8.0",
         "ext-json": "*",
@@ -56,6 +49,9 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "conflicts": {
+        "laravel/socialite": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true
