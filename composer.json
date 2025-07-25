@@ -50,7 +50,7 @@
     "config": {
         "sort-packages": true
     },
-    "conflicts": {
+    "replace": {
         "laravel/socialite": "*"
     },
     "minimum-stability": "dev",
