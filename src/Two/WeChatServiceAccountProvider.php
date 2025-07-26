@@ -2,9 +2,7 @@
 
 namespace Laravel\Socialite\Two;
 
-use Exception;
 use GuzzleHttp\RequestOptions;
-use Illuminate\Support\Arr;
 
 class WeChatServiceAccountProvider extends AbstractProvider implements ProviderInterface
 {
@@ -71,12 +69,11 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
         return (new User)->setRaw($user)->map([
             // HACK: use unionid as user id
             'id'       => in_array('unionid', $this->getScopes(), true) ? $user['unionid'] : $user['openid'],
-            // HACK: Tencent scope snsapi_base only return openid
             'openid'   => $user['openid'],
             'unionid'   => $user['unionid'] ?? null,
             'nickname' => $user['nickname'] ?? null,
             'name'     => null,
-            'email'    => null,
+            'email'    => $user['openid'] . '@wechat.example.com',
             'avatar'   => $user['headimgurl'] ?? null,
         ]);
     }
