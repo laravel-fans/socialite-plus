@@ -16,12 +16,9 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      */
     protected $scopes = ['snsapi_userinfo'];
 
-    /**
-     * The scopes being requested.
-     *
-     * @var string
-     */
     private $openId;
+
+    private $credentialsResponseBody;
 
     /**
      * {@inheritdoc}
@@ -37,6 +34,12 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
     protected function getTokenUrl()
     {
         return 'https://api.weixin.qq.com/sns/oauth2/access_token';
+    }
+
+    public function getAccessTokenResponse($code)
+    {
+        $this->credentialsResponseBody = parent::getAccessTokenResponse($code);
+        return $this->credentialsResponseBody;
     }
 
     /**
