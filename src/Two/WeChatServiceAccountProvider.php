@@ -16,9 +16,12 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      */
     protected $scopes = ['snsapi_userinfo'];
 
+    /**
+     * fu*k Tencent: break the standard of get user by token, it needs openid and token
+     *
+     * @var string
+     */
     private $openId;
-
-    private $credentialsResponseBody;
 
     /**
      * {@inheritdoc}
@@ -38,8 +41,9 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
 
     public function getAccessTokenResponse($code)
     {
-        $this->credentialsResponseBody = parent::getAccessTokenResponse($code);
-        return $this->credentialsResponseBody;
+        $response = parent::getAccessTokenResponse($code);
+        $this->setOpenId($response['openid']);
+        return $response;
     }
 
     /**
@@ -47,16 +51,14 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      */
     protected function getUserByToken($token)
     {
-         $openId = $this->credentialsResponseBody['openid'] ?? $this->openId;
-
         // snsapi_base scope havs only id, but no info
         if (in_array('snsapi_base', $this->getScopes(), true)) {
-            return ['openid' => $openId];
+            return ['openid' => $this->openId];
         }
         $response = $this->getHttpClient()->get('https://api.weixin.qq.com/sns/userinfo', [
             RequestOptions::QUERY => [
                 'access_token' => $token, // HACK: Tencent use token in Query String, not in Header Authorization
-                'openid'       => $openId, // HACK: Tencent need id, but other platforms don't need
+                'openid'       => $this->openId, // HACK: Tencent need id, but other platforms don't need
                 'lang'         => 'zh_CN',
             ],
         ]);
