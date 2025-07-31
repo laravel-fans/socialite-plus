@@ -20,6 +20,7 @@ use Laravel\Socialite\Two\SlackProvider;
 use Laravel\Socialite\Two\TwitchProvider;
 use Laravel\Socialite\Two\TwitterProvider as TwitterOAuth2Provider;
 use Laravel\Socialite\Two\XProvider;
+use Laravel\Socialite\Two\WeChatServiceAccountProvider;
 use League\OAuth1\Client\Server\Twitter as TwitterServer;
 
 class SocialiteManager extends Manager implements Contracts\Factory
@@ -227,6 +228,20 @@ class SocialiteManager extends Manager implements Contracts\Factory
 
         return $this->buildProvider(
             SlackOpenIdProvider::class, $config
+        );
+    }
+
+    /**
+     * Create an instance of the specified driver.
+     *
+     * @return \Laravel\Socialite\Two\AbstractProvider
+     */
+    protected function createWeChatServiceAccountDriver()
+    {
+        $config = $this->config->get('services.wechat-service-account');
+
+        return $this->buildProvider(
+            WeChatServiceAccountProvider::class, $config
         );
     }
 
