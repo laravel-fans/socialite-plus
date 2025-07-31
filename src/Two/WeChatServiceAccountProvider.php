@@ -12,9 +12,11 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      * snsapi_userinfo: requires manual consent from the user.
      * unionid: hack for union id when get snsapi_userinfo
      *
+     * @see https://developers.weixin.qq.com/doc/service/guide/h5/auth.html
      * @var array
      */
     protected $scopes = ['snsapi_userinfo'];
+    private $driver = 'wechat-service-account';
 
     /**
      * fu*k Tencent: break the standard of get user by token, it needs openid and token
@@ -51,7 +53,7 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      */
     protected function getUserByToken($token)
     {
-        // snsapi_base scope havs only id, but no info
+        // snsapi_base scope have only id, but no info
         if (in_array('snsapi_base', $this->getScopes(), true)) {
             return ['openid' => $this->openId];
         }
@@ -71,6 +73,8 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      */
     protected function mapUserToObject(array $user)
     {
+        $emailDomain = $this->parameters['email_domain'] ?? $this->driver . '.example.com';
+        $emailPrefix = isset($user['unionid']) ? 'unionid.' . $user['unionid'] : 'openid.' . $user['openid'];
         return (new User)->setRaw($user)->map([
             // HACK: use unionid as user id
             'id'       => in_array('unionid', $this->getScopes(), true) ? $user['unionid'] : $user['openid'],
@@ -78,11 +82,10 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
             'unionid'   => $user['unionid'] ?? null,
             'nickname' => $user['nickname'] ?? null,
             'name'     => null,
-            'email'    => $user['openid'] . '@wechat.example.com',
+            'email'    => $emailPrefix . '@' . $emailDomain,
             'avatar'   => $user['headimgurl'] ?? null,
         ]);
     }
-
 
     /**
      * {@inheritdoc}
@@ -116,12 +119,7 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
     {
         // HACK: unionid is a faker scope for user id
         if (in_array('unionid', $scopes, true)) {
-            unset($scopes[array_search('unionid', $scopes, true)]);
-        }
-        // HACK: use scopes() instead of setScopes()
-        // docs: https://laravel.com/docs/socialite#access-scopes
-        if (in_array('snsapi_base', $scopes, true)) {
-            unset($scopes[array_search('snsapi_userinfo', $scopes, true)]);
+            $scopes = ['snsapi_userinfo'];
         }
 
         return implode($scopeSeparator, $scopes);
