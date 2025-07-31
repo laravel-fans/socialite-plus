@@ -11,6 +11,7 @@ class WeChatWebProvider extends WeChatServiceAccountProvider
      * @var array
      */
     protected $scopes = ['snsapi_login'];
+    private $driver = 'wechat-web';
 
     protected function getAuthUrl($state)
     {
