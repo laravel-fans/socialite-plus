@@ -119,7 +119,7 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
     {
         // HACK: unionid is a faker scope for user id
         if (in_array('unionid', $scopes, true)) {
-            $scopes = ['snsapi_userinfo'];
+            $scopes = array_values(array_diff($scopes, ['unionid']));
         }
 
         return implode($scopeSeparator, $scopes);
