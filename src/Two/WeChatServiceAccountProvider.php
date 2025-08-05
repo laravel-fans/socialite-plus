@@ -73,8 +73,13 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      */
     protected function mapUserToObject(array $user)
     {
+
         $emailDomain = $this->parameters['email_domain'] ?? $this->driver . '.example.com';
-        $emailPrefix = isset($user['unionid']) ? 'unionid.' . $user['unionid'] : 'openid.' . $user['openid'];
+        $emailPrefix = 'openid.' . $user['openid'];
+        if (!empty($user['unionid'])) {
+            $emailPrefix = 'unionid.' . $user['unionid'];
+            $emailDomain = $this->parameters['email_domain'] ?? 'wechat.example.com';
+        }
         return (new User)->setRaw($user)->map([
             // HACK: use unionid as user id
             'id'       => in_array('unionid', $this->getScopes(), true) ? $user['unionid'] : $user['openid'],
