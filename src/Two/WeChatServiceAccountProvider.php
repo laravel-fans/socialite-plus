@@ -10,7 +10,6 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
      * The scopes being requested.
      * snsapi_base: not require confirmation, get only openId, no info.
      * snsapi_userinfo: requires manual consent from the user.
-     * unionid: hack for union id when get snsapi_userinfo
      *
      * @see https://developers.weixin.qq.com/doc/service/guide/h5/auth.html
      * @var array
@@ -74,9 +73,9 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
     protected function mapUserToObject(array $user)
     {
         $emailDomain = $this->parameters['email_domain'] ?? $this->driver . '.example.com';
-        $emailPrefix = 'openid.' . $user['openid'];
-        if (in_array('unionid', $this->getScopes()) && !empty($user['unionid'])) {
-            $emailPrefix = 'unionid.' . $user['unionid'];
+        $emailPrefix = $user['openid'];
+        if (!empty($user['unionid'])) {
+            $emailPrefix = $user['unionid'];
             $emailDomain = $this->parameters['email_domain'] ?? 'wechat.example.com';
         }
         return (new User)->setRaw($user)->map([
@@ -114,19 +113,6 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
         $fields['appid'] = $this->clientId; // HACK: Tencent use appid, not app_id or client_id
 
         return $fields;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function formatScopes(array $scopes, $scopeSeparator)
-    {
-        // HACK: unionid is a faker scope for user id
-        if (in_array('unionid', $scopes, true)) {
-            $scopes = array_values(array_diff($scopes, ['unionid']));
-        }
-
-        return implode($scopeSeparator, $scopes);
     }
 
     public function setOpenId($openId)
