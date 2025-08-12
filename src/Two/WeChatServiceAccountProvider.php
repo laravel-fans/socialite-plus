@@ -75,15 +75,13 @@ class WeChatServiceAccountProvider extends AbstractProvider implements ProviderI
     {
         $emailDomain = $this->parameters['email_domain'] ?? $this->driver . '.example.com';
         $emailPrefix = 'openid.' . $user['openid'];
-        $id = $user['openid'];
         if (in_array('unionid', $this->getScopes()) && !empty($user['unionid'])) {
             $emailPrefix = 'unionid.' . $user['unionid'];
             $emailDomain = $this->parameters['email_domain'] ?? 'wechat.example.com';
-            $id = $user['unionid'];
         }
         return (new User)->setRaw($user)->map([
-            // HACK: use unionid as user id
-            'id'       => $id,
+            // use openid as user id, unionid maybe not exists, when unionid exists, should not change id
+            'id'       => $user['openid'],
             'openid'   => $user['openid'],
             'unionid'   => $user['unionid'] ?? null,
             'nickname' => $user['nickname'] ?? null,
