@@ -1,6 +1,18 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/socialite/compare/v5.23.0...5.x)
+## [Unreleased](https://github.com/laravel/socialite/compare/v5.24.0...5.x)
+
+## [v5.24.0](https://github.com/laravel/socialite/compare/v5.23.2...v5.24.0) - 2025-12-09
+
+* Add Testing Fakes by [@stevebauman](https://github.com/stevebauman) in https://github.com/laravel/socialite/pull/756
+
+## [v5.23.2](https://github.com/laravel/socialite/compare/v5.23.1...v5.23.2) - 2025-11-21
+
+* [5.x] PHP 8.5 Compatibility by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/socialite/pull/755
+
+## [v5.23.1](https://github.com/laravel/socialite/compare/v5.23.0...v5.23.1) - 2025-10-27
+
+**Full Changelog**: https://github.com/laravel/socialite/compare/v5.23.0...v5.23.1
 
 ## [v5.23.0](https://github.com/laravel/socialite/compare/v5.22.0...v5.23.0) - 2025-07-23
 
